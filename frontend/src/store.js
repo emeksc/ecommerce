@@ -7,9 +7,11 @@ import {
 } from "./reducers/productReducers";
 
 const initialState = {
-  cartItems: localStorage.getItem("cartItems")
-    ? JSON.parse(localStorage.getItem("cartItems"))
-    : [],
+  cart: {
+    cartItems: localStorage.getItem("cartItems")
+      ? JSON.parse(localStorage.getItem("cartItems"))
+      : [],
+  },
 };
 const reducer = combineReducers({
   productList: productListReducers,
