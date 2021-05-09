@@ -5,6 +5,7 @@ import {
   productListReducers,
   productDetailsReducers,
 } from "./reducers/productReducers";
+import { userSigninReducer } from "./reducers/userReducers";
 
 const initialState = {
   cart: {
@@ -12,11 +13,17 @@ const initialState = {
       ? JSON.parse(localStorage.getItem("cartItems"))
       : [],
   },
+  userSignin: {
+    userInfo: localStorage.getItem("userInfo")
+      ? JSON.parse(localStorage.getItem("userInfo"))
+      : null,
+  },
 };
 const reducer = combineReducers({
   productList: productListReducers,
   productDetails: productDetailsReducers,
   cart: cartReducer,
+  userSignin: userSigninReducer,
 });
 const store = createStore(
   reducer,
