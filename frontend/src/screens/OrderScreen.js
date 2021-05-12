@@ -4,12 +4,23 @@ import { Link } from "react-router-dom";
 import { detailsOrder } from "../actions/orderActions";
 import LoadingBox from "../components/LoadingBox";
 import MessageBox from "../components/MessageBox";
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+import CheckoutForm from "../components/CheckoutForm";
+
+const promise = loadStripe(
+  "pk_test_51IqJE1Ev0U2CTTgS7JHl5NysaFMIZAJaFTmLXeh2U3OZNg3OBXiA9tzEGIVluEfhIWKAow6hY5Ig0SHdFWbhh5hx00g3mENZLD"
+);
 
 export default function OrderScreen(props) {
   const orderId = props.match.params.id;
   const orderDetails = useSelector((state) => state.orderDetails);
   const { order, loading, error } = orderDetails;
+
+  const orderPay = useSelector((state) => state.orderPay);
+  const { paySuccess } = orderPay;
   const dispatch = useDispatch();
+  console.log(paySuccess, "effect");
   useEffect(() => {
     dispatch(detailsOrder(orderId));
   }, [dispatch, orderId]);
@@ -36,6 +47,9 @@ export default function OrderScreen(props) {
                   {order.shippingAddress.country}
                   <br />
                 </p>
+                {!order.isDelivered && (
+                  <MessageBox variant="error">Not Delivered</MessageBox>
+                )}
               </div>
             </li>
             <li>
@@ -45,6 +59,11 @@ export default function OrderScreen(props) {
                   <strong>Method:</strong>
                   {order.paymentMethod}
                 </p>
+                {order.isPaid || paySuccess ? (
+                  <div></div>
+                ) : (
+                  <MessageBox variant="error">Not Paid</MessageBox>
+                )}
               </div>
             </li>
             <li>
@@ -111,6 +130,15 @@ export default function OrderScreen(props) {
                     <strong>{order.totalPrice} TL</strong>
                   </div>
                 </div>
+                {/* {!order.isPaid && ( */}
+                <Elements stripe={promise}>
+                  <CheckoutForm
+                    totalAmount={order.totalPrice}
+                    order={order}
+                    payState={false}
+                  />
+                </Elements>
+                {/* )} */}
               </li>
             </ul>
           </div>
