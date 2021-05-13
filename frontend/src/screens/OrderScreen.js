@@ -20,7 +20,6 @@ export default function OrderScreen(props) {
   const orderPay = useSelector((state) => state.orderPay);
   const { paySuccess } = orderPay;
   const dispatch = useDispatch();
-  console.log(paySuccess, "effect");
   useEffect(() => {
     dispatch(detailsOrder(orderId));
   }, [dispatch, orderId]);
@@ -60,7 +59,7 @@ export default function OrderScreen(props) {
                   {order.paymentMethod}
                 </p>
                 {order.isPaid || paySuccess ? (
-                  <div></div>
+                  <MessageBox variant="info">{`Successfully paid on ${order.paidAt}`}</MessageBox>
                 ) : (
                   <MessageBox variant="error">Not Paid</MessageBox>
                 )}
@@ -130,15 +129,15 @@ export default function OrderScreen(props) {
                     <strong>{order.totalPrice} TL</strong>
                   </div>
                 </div>
-                {/* {!order.isPaid && ( */}
-                <Elements stripe={promise}>
-                  <CheckoutForm
-                    totalAmount={order.totalPrice}
-                    order={order}
-                    payState={false}
-                  />
-                </Elements>
-                {/* )} */}
+                {!order.isPaid && (
+                  <Elements stripe={promise}>
+                    <CheckoutForm
+                      totalAmount={order.totalPrice}
+                      order={order}
+                      payState={false}
+                    />
+                  </Elements>
+                )}
               </li>
             </ul>
           </div>
